@@ -58,6 +58,9 @@ BEAM_DATAFLOW_PIPELINE_ARGS = [
     f"--temp_location={os.path.join(GCS_LOCATION, 'temp')}",
     f"--region={REGION}",
     f"--runner={BEAM_RUNNER}",
+    f"--serviceAccountEmail={SERVICE_ACCOUNT}",
+    f"--no_use_public_ips",
+    f"--subnetwork={SUBNETWORK}"
 ]
 
 TRAINING_RUNNER = os.getenv("TRAINING_RUNNER", "local")

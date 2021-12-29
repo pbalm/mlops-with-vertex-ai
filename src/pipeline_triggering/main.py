@@ -16,7 +16,7 @@
 import os
 import json
 import logging
-from kfp.v2.google.client import AIPlatformClient
+from google.cloud import aiplatform
 from google.cloud import storage
 import base64
 
@@ -53,11 +53,17 @@ def trigger_pipeline(event, context):
     logging.info(f"Event data: {data}")
 
     parameter_values = json.loads(data)
+    sa = "sa-mlops@mlops1-mlops.iam.gserviceaccount.com"
+    job = aiplatform.PipelineJob(display_name = "DISPLAY_NAME",
+                             template_path = gcs_pipeline_file_location,
+                             parameter_values = parameter_values,
+                             project = project,
+                             location = region)
 
-    api_client = AIPlatformClient(project_id=project, region=region)
+    response = job.submit(service_account=sa,
+           network=None)
 
-    response = api_client.create_run_from_job_spec(
-        job_spec_path=gcs_pipeline_file_location, parameter_values=parameter_values
-    )
 
     logging.info(response)
+
+
