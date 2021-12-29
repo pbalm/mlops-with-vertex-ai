@@ -49,6 +49,9 @@ TFX_IMAGE_URI = os.getenv(
 )
 
 BEAM_RUNNER = os.getenv("BEAM_RUNNER", "DirectRunner")
+SERVICE_ACCOUNT = os.getenv("SERVICE_ACCOUNT", "")
+SUBNETWORK = os.getenv("SUBNETWORK", "")
+
 BEAM_DIRECT_PIPELINE_ARGS = [
     f"--project={PROJECT}",
     f"--temp_location={os.path.join(GCS_LOCATION, 'temp')}",
