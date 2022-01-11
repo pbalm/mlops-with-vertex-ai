@@ -30,7 +30,6 @@ def compile_training_pipeline(pipeline_definition_file):
         config.ARTIFACT_STORE_URI,
         config.PIPELINE_NAME,
     )
-
     managed_pipeline = training_pipeline.create_pipeline(
         pipeline_root=pipeline_root,
         num_epochs=data_types.RuntimeParameter(
