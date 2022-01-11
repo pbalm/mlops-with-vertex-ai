@@ -25,6 +25,7 @@ def trigger_pipeline(event, context):
 
     project = os.getenv("PROJECT")
     region = os.getenv("REGION")
+    sa = os.getenv("SERVICE_ACCOUNT")
     gcs_pipeline_file_location = os.getenv("GCS_PIPELINE_FILE_LOCATION")
 
     if not project:
@@ -33,11 +34,10 @@ def trigger_pipeline(event, context):
         raise ValueError("Environment variable REGION is not set.")
     if not gcs_pipeline_file_location:
         raise ValueError("Environment variable GCS_PIPELINE_FILE_LOCATION is not set.")
+    if not sa:
+        raise ValueError("Environment variable SERVICE_ACCOUNT is not set.")
 
     storage_client = storage.Client()
-
-    if not gcs_pipeline_file_location:
-        raise ValueError("Environment variable GCS_PIPELINE_FILE_LOCATION is not set.")
 
     path_parts = gcs_pipeline_file_location.replace("gs://", "").split("/")
     bucket_name = path_parts[0]
@@ -53,7 +53,6 @@ def trigger_pipeline(event, context):
     logging.info(f"Event data: {data}")
 
     parameter_values = json.loads(data)
-    sa = "sa-mlops@mlops1-mlops.iam.gserviceaccount.com"
     job = aiplatform.PipelineJob(display_name = "DISPLAY_NAME",
                              template_path = gcs_pipeline_file_location,
                              parameter_values = parameter_values,
