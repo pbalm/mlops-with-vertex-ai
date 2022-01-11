@@ -76,3 +76,7 @@ steps:
   - 'ENDPOINT_DISPLAY_NAME=$_ENDPOINT_DISPLAY_NAME'
   id: 'Test Model Endpoint'
   waitFor: ['Deploy Model']
+
+serviceAccount: 'projects/$_PROJECT/serviceAccounts/$_SERVICE_ACCOUNT'
+
+logsBucket: '$_GCS_BUCKET'
