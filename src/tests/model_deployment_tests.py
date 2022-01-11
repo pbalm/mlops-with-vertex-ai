@@ -123,6 +123,8 @@ def test_model_endpoint():
     assert region, "Environment variable REGION is None!"
     assert model_display_name, "Environment variable MODEL_DISPLAY_NAME is None!"
     assert endpoint_display_name, "Environment variable ENDPOINT_DISPLAY_NAME is None!"
+  
+    vertex_ai.init(project=project, location=region,)
 
     endpoints = vertex_ai.Endpoint.list(
         filter=f'display_name={endpoint_display_name}',
