@@ -26,7 +26,7 @@ import argparse
 import hypertune
 
 from src.model_training import defaults, trainer, exporter
-
+import google.auth
 
 dirname = os.path.dirname(__file__)
 dirname = dirname.replace("/model_training", "")
@@ -86,10 +86,11 @@ def main():
     logging.info(f"Hyperparameter: {hyperparams}")
 
     if args.experiment_name:
+        
         vertex_ai.init(
             project=args.project,
             staging_bucket=args.staging_bucket,
-            experiment=args.experiment_name,
+            experiment=args.experiment_name
         )
 
         logging.info(f"Using Vertex AI experiment: {args.experiment_name}")
