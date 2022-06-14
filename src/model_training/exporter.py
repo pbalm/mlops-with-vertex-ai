@@ -32,9 +32,11 @@ def _get_serve_tf_examples_fn(classifier, tft_output, raw_feature_spec):
     @tf.function
     def serve_tf_examples_fn(serialized_tf_examples):
         """Returns the output to be used in the serving signature."""
-        for key in list(raw_feature_spec.keys()):
-            if key not in features.FEATURE_NAMES:
-                raw_feature_spec.pop(key)
+        #for key in list(raw_feature_spec.keys()):
+        #    if key not in features.FEATURE_NAMES:
+        #        raw_feature_spec.pop(key)
+        if features.TARGET_FEATURE_NAME in raw_feature_spec.keys():
+            raw_feature_spec.pop(features.TARGET_FEATURE_NAME)
 
         parsed_features = tf.io.parse_example(serialized_tf_examples, raw_feature_spec)
 
@@ -81,7 +83,7 @@ def export_serving_model(
             shape=(None, 1), dtype=spec.dtype, name=feature_name
         )
         for feature_name, spec in raw_feature_spec.items()
-        if feature_name in features.FEATURE_NAMES
+        if feature_name != features.TARGET_FEATURE_NAME
     }
 
     signatures = {

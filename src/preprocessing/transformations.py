@@ -46,3 +46,16 @@ def preprocessing_fn(inputs):
         outputs[key] = tf.squeeze(outputs[key], -1)
 
     return outputs
+
+
+def preprocessing_fn_creditcards(inputs):
+    # Let's normalize all the columns that start with V
+    output_dict = {
+        'Amount': tft.scale_to_z_score(inputs['Amount']),
+        'Class': inputs['Class']
+    }
+    for col in inputs.keys():
+        if col.startswith("V"):
+            output_dict[col] = tft.scale_to_0_1(inputs[col])
+
+    return output_dict

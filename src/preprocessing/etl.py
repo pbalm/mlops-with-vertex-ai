@@ -95,7 +95,7 @@ def run_transform_pipeline(args):
             transformed_train_dataset, transform_fn = (
                 raw_train_dataset
                 | "Analyze & Transform"
-                >> tft_beam.AnalyzeAndTransformDataset(transformations.preprocessing_fn)
+                >> tft_beam.AnalyzeAndTransformDataset(transformations.preprocessing_fn_creditcards)
             )
 
             # Get data and schema separately from the transformed_dataset.

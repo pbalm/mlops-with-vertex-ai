@@ -13,6 +13,8 @@
 # limitations under the License.
 """The entrypoint for the Vertex training job."""
 
+from google.cloud import aiplatform as vertex_ai
+
 import os
 import sys
 from datetime import datetime
@@ -21,7 +23,6 @@ import tensorflow as tf
 from tensorflow.python.client import device_lib
 import argparse
 
-from google.cloud import aiplatform as vertex_ai
 import hypertune
 
 from src.model_training import defaults, trainer, exporter

@@ -14,40 +14,40 @@
 """Model features metadata utils."""
 
 
-FEATURE_NAMES = [
-    "trip_month",
-    "trip_day",
-    "trip_day_of_week",
-    "trip_hour",
-    "trip_seconds",
-    "trip_miles",
-    "payment_type",
-    "pickup_grid",
-    "dropoff_grid",
-    "euclidean",
-    "loc_cross",
-]
+# FEATURE_NAMES = [
+#     "trip_month",
+#     "trip_day",
+#     "trip_day_of_week",
+#     "trip_hour",
+#     "trip_seconds",
+#     "trip_miles",
+#     "payment_type",
+#     "pickup_grid",
+#     "dropoff_grid",
+#     "euclidean",
+#     "loc_cross",
+# ]
 
-TARGET_FEATURE_NAME = "tip_bin"
+TARGET_FEATURE_NAME = "Class"
 
-TARGET_LABELS = ["tip<20%", "tip>=20%"]
+TARGET_LABELS = ["legit", "fraudulent"]
 
-NUMERICAL_FEATURE_NAMES = [
-    "trip_seconds",
-    "trip_miles",
-    "euclidean",
-]
+# NUMERICAL_FEATURE_NAMES = [
+#     "trip_seconds",
+#     "trip_miles",
+#     "euclidean",
+# ]
 
-EMBEDDING_CATEGORICAL_FEATURES = {
-    "trip_month": 2,
-    "trip_day": 4,
-    "trip_hour": 3,
-    "pickup_grid": 3,
-    "dropoff_grid": 3,
-    "loc_cross": 10,
-}
+# EMBEDDING_CATEGORICAL_FEATURES = {
+#     "trip_month": 2,
+#     "trip_day": 4,
+#     "trip_hour": 3,
+#     "pickup_grid": 3,
+#     "dropoff_grid": 3,
+#     "loc_cross": 10,
+# }
 
-ONEHOT_CATEGORICAL_FEATURE_NAMES = ["payment_type", "trip_day_of_week"]
+# ONEHOT_CATEGORICAL_FEATURE_NAMES = ["payment_type", "trip_day_of_week"]
 
 
 def transformed_name(key: str) -> str:

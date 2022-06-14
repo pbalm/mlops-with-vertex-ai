@@ -15,6 +15,9 @@
 
 import tensorflow as tf
 from tensorflow import keras
+from tensorflow.keras import layers, activations, metrics, losses, optimizers
+
+import logging
 
 from src.common import features
 
@@ -83,3 +86,25 @@ def create_binary_classifier(tft_output, hyperparams):
         )
 
     return _create_binary_classifier(feature_vocab_sizes, hyperparams)
+
+
+def create_model(feature_keys, hyperparams) -> keras.Model:
+    
+    inputs = [layers.Input(shape=(1,), name=f) for f in feature_keys if f != features.TARGET_FEATURE_NAME]
+    d = layers.concatenate(inputs)
+    
+    for units in hyperparams['hidden_units']:
+        d = layers.Dense(units, activation=activations.relu)(d)
+        
+    outputs = layers.Dense(1, activation=activations.sigmoid)(d)
+    
+    model = keras.Model(inputs=inputs, outputs=outputs)
+
+    model.compile(
+        optimizer=optimizers.RMSprop(),
+        loss=losses.binary_crossentropy,
+        metrics=[metrics.binary_accuracy])
+
+    model.summary(print_fn=logging.info)
+
+    return model

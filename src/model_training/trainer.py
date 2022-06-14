@@ -56,7 +56,7 @@ def train(
     )
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
 
-    classifier = model.create_binary_classifier(tft_output, hyperparams)
+    classifier = model.create_model(transformed_feature_spec.keys(), hyperparams)
     if base_model_dir:
         try:
             classifier = keras.load_model(base_model_dir)
