@@ -24,12 +24,12 @@ def _get_source_query(bq_dataset_name, bq_table_name, ml_use, limit=None):
     
     if not ml_use:
         query += f"""
-    EXCEPT (Time, Class)
+    EXCEPT (Time, ML_use, Class)
     FROM {bq_dataset_name}.{bq_table_name} 
     """
     else:
         query += f"""
-    EXCEPT (Time)
+    EXCEPT (Time, ML_use)
     FROM {bq_dataset_name}.{bq_table_name} 
     WHERE ML_use = '{ml_use}'
     """

@@ -28,21 +28,39 @@ root.addHandler(handler)
 
 LIMIT = 100
 
-TARGET_COLUMN = "tip_bin"
+TARGET_COLUMN = "Class"
 
 EXPECTED_TRAINING_COLUMNS = [
-    "trip_month",
-    "trip_day",
-    "trip_day_of_week",
-    "trip_hour",
-    "trip_seconds",
-    "trip_miles",
-    "payment_type",
-    "pickup_grid",
-    "dropoff_grid",
-    "euclidean",
-    "loc_cross",
-    "tip_bin",
+'V1',
+'V2',
+'V3',
+'V4',
+'V5',
+'V6',
+'V7',
+'V8',
+'V9',
+'V10',
+'V11',
+'V12',
+'V13',
+'V14',
+'V15',
+'V16',
+'V17',
+'V18',
+'V19',
+'V20',
+'V21',
+'V22',
+'V23',
+'V24',
+'V25',
+'V26',
+'V27',
+'V28',
+'Amount',
+'Class'
 ]
 
 
@@ -71,7 +89,7 @@ def test_training_query():
     df = bq_client.query(query).to_dataframe()
     columns = set(df.columns)
     assert columns == set(EXPECTED_TRAINING_COLUMNS)
-    assert df.shape == (LIMIT, 12)
+    assert df.shape == (LIMIT, len(columns))
 
 
 def test_serving_query():
@@ -101,4 +119,4 @@ def test_serving_query():
     expected_serving_columns = EXPECTED_TRAINING_COLUMNS
     expected_serving_columns.remove(TARGET_COLUMN)
     assert columns == set(expected_serving_columns)
-    assert df.shape == (LIMIT, 11)
+    assert df.shape == (LIMIT, len(columns))
