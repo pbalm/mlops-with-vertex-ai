@@ -19,7 +19,7 @@ import tensorflow_transform as tft
 from src.common import features
 
 
-def preprocessing_fn(inputs):
+def preprocessing_fn_original(inputs):
     """tf.transform's callback function for preprocessing inputs.
     Args:
       inputs: map from feature keys to raw not-yet-transformed features.
@@ -46,6 +46,10 @@ def preprocessing_fn(inputs):
         outputs[key] = tf.squeeze(outputs[key], -1)
 
     return outputs
+
+
+def preprocessing_fn(inputs):
+    return preprocessing_fn_creditcards(inputs)
 
 
 def preprocessing_fn_creditcards(inputs):

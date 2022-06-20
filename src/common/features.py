@@ -71,26 +71,20 @@ def categorical_feature_names() -> list:
     )
 
 
-def generate_explanation_config():
+def generate_explanation_config(transform_feature_spec):
     explanation_config = {
         "inputs": {},
         "outputs": {},
         "params": {"sampled_shapley_attribution": {"path_count": 10}},
     }
 
-    for feature_name in FEATURE_NAMES:
-        if feature_name in NUMERICAL_FEATURE_NAMES:
+    for feature_name in transform_feature_spec:
+        if feature_name != TARGET_FEATURE_NAME:
             explanation_config["inputs"][feature_name] = {
                 "input_tensor_name": feature_name,
                 "modality": "numeric",
             }
-        else:
-            explanation_config["inputs"][feature_name] = {
-                "input_tensor_name": feature_name,
-                "encoding": 'IDENTITY',
-                "modality": "categorical",
-            }
-
+ 
     explanation_config["outputs"] = {"scores": {"output_tensor_name": "scores"}}
 
     return explanation_config

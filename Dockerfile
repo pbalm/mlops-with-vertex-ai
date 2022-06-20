@@ -1,9 +1,8 @@
-FROM gcr.io/tfx-oss-public/tfx:1.2.0
+FROM apache/beam_python3.8_sdk:2.39.0
 
 COPY requirements.txt requirements.txt
-
 RUN pip install -r requirements.txt
 
-COPY src/ src/
+COPY src/raw_schema/schema.pbtxt raw_schema/
 
 ENV PYTHONPATH="/pipeline:${PYTHONPATH}"
