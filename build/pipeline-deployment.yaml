@@ -98,7 +98,6 @@ steps:
   - 'TRAINING_RUNNER=$_TRAINING_RUNNER'
   - 'SERVICE_ACCOUNT=$_SERVICE_ACCOUNT'
   - 'SUBNETWORK=$_SUBNETWORK'
-  - 'LABELS=$_LABELS'
   
   id: 'Compile Pipeline'
   waitFor: ['Local Test E2E Pipeline']

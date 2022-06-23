@@ -283,7 +283,7 @@ def create_pipeline(
         evaluator,
         pusher,
     ]
-
+    
     if int(config.UPLOAD_MODEL):
         pipeline_components.append(vertex_model_uploader)
         # Add dependency from pusher to aip_model_uploader.

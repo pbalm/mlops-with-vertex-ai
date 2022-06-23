@@ -138,3 +138,5 @@ mlpipeline-ui-metadata.json
 model.png
 *-pipeline.json
 *.DS_Store
+
+Dockerfile

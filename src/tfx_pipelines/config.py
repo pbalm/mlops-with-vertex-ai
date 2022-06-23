@@ -51,7 +51,7 @@ TFX_IMAGE_URI = os.getenv(
 BEAM_RUNNER = os.getenv("BEAM_RUNNER", "DirectRunner")
 SERVICE_ACCOUNT = os.getenv("SERVICE_ACCOUNT", "")
 SUBNETWORK = os.getenv("SUBNETWORK", "")
-LABELS = os.getenv("LABELS", "")
+#LABELS = os.getenv("LABELS", "")
 
 
 BEAM_DIRECT_PIPELINE_ARGS = [
@@ -68,8 +68,8 @@ BEAM_DATAFLOW_PIPELINE_ARGS = [
     f"--subnetwork={SUBNETWORK}"
 ]
 
-for label in LABELS.split(','):
-    BEAM_DATAFLOW_PIPELINE_ARGS.append(f"--label={label}")
+#for label in LABELS.split(','):
+#    BEAM_DATAFLOW_PIPELINE_ARGS.append(f"--label={label}")
 
 TRAINING_RUNNER = os.getenv("TRAINING_RUNNER", "local")
 VERTEX_TRAINING_ARGS = {
