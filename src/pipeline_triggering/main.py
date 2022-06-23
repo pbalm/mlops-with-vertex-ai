@@ -26,6 +26,7 @@ def trigger_pipeline(event, context):
     project = os.getenv("PROJECT")
     region = os.getenv("REGION")
     sa = os.getenv("SERVICE_ACCOUNT")
+    pipeline_name = os.getenv("PIPELINE_NAME")
     gcs_pipeline_file_location = os.getenv("GCS_PIPELINE_FILE_LOCATION")
     labels_str = os.getenv("LABELS") #Default to None
 
@@ -58,7 +59,7 @@ def trigger_pipeline(event, context):
     logging.info(f"Event data: {data}")
     
     parameter_values = json.loads(data)
-    job = aiplatform.PipelineJob(display_name = "DISPLAY_NAME",
+    job = aiplatform.PipelineJob(display_name = pipeline_name,
                              template_path = gcs_pipeline_file_location,
                              parameter_values = parameter_values,
                              project = project,
