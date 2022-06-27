@@ -18,18 +18,39 @@ import logging
 import tensorflow as tf
 
 test_instance = {
-    "dropoff_grid": ["POINT(-87.6 41.9)"],
-    "euclidean": [2064.2696],
-    "loc_cross": [""],
-    "payment_type": ["Credit Card"],
-    "pickup_grid": ["POINT(-87.6 41.9)"],
-    "trip_miles": [1.37],
-    "trip_day": [12],
-    "trip_hour": [16],
-    "trip_month": [2],
-    "trip_day_of_week": [4],
-    "trip_seconds": [555],
+    'V1': [-0.906611],
+    'V2': [-0.906611],
+    'V3': [-0.906611],
+    'V4': [-0.906611],
+    'V5': [-0.906611],
+    'V6': [-0.906611],
+    'V7': [-0.906611],
+    'V8': [-0.906611],
+    'V9': [-0.906611],
+    'V10': [-0.906611],
+    'V11': [-0.906611],
+    'V12': [-0.906611],
+    'V13': [-0.906611],
+    'V14': [-0.906611],
+    'V15': [-0.906611],
+    'V16': [-0.906611],
+    'V17': [-0.906611],
+    'V18': [-0.906611],
+    'V19': [-0.906611],
+    'V20': [-0.906611],
+    'V21': [-0.906611],
+    'V22': [-0.906611],
+    'V23': [-0.906611],
+    'V24': [-0.906611],
+    'V25': [-0.906611],
+    'V26': [-0.906611],
+    'V27': [-0.906611],
+    'V28': [-0.906611],
+    'Amount': [15.99]
 }
+
+
+
 
 SERVING_DEFAULT_SIGNATURE_NAME = "serving_default"
 
@@ -39,17 +60,35 @@ from google.cloud import aiplatform as vertex_ai
 def test_model_artifact():
 
     feature_types = {
-        "dropoff_grid": tf.dtypes.string,
-        "euclidean": tf.dtypes.float32,
-        "loc_cross": tf.dtypes.string,
-        "payment_type": tf.dtypes.string,
-        "pickup_grid": tf.dtypes.string,
-        "trip_miles": tf.dtypes.float32,
-        "trip_day": tf.dtypes.int64,
-        "trip_hour": tf.dtypes.int64,
-        "trip_month": tf.dtypes.int64,
-        "trip_day_of_week": tf.dtypes.int64,
-        "trip_seconds": tf.dtypes.int64,
+        'V1': tf.dtypes.float32,
+        'V2': tf.dtypes.float32,
+        'V3': tf.dtypes.float32,
+        'V4': tf.dtypes.float32,
+        'V5': tf.dtypes.float32,
+        'V6': tf.dtypes.float32,
+        'V7': tf.dtypes.float32,
+        'V8': tf.dtypes.float32,
+        'V9': tf.dtypes.float32,
+        'V10': tf.dtypes.float32,
+        'V11': tf.dtypes.float32,
+        'V12': tf.dtypes.float32,
+        'V13': tf.dtypes.float32,
+        'V14': tf.dtypes.float32,
+        'V15': tf.dtypes.float32,
+        'V16': tf.dtypes.float32,
+        'V17': tf.dtypes.float32,
+        'V18': tf.dtypes.float32,
+        'V19': tf.dtypes.float32,
+        'V20': tf.dtypes.float32,
+        'V21': tf.dtypes.float32,
+        'V22': tf.dtypes.float32,
+        'V23': tf.dtypes.float32,
+        'V24': tf.dtypes.float32,
+        'V25': tf.dtypes.float32,
+        'V26': tf.dtypes.float32,
+        'V27': tf.dtypes.float32,
+        'V28': tf.dtypes.float32,
+        'Amount': tf.dtypes.float32
     }
 
     new_test_instance = dict()

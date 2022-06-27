@@ -21,6 +21,7 @@ import json
 import tensorflow_model_analysis as tfma
 
 from ml_metadata.proto import metadata_store_pb2
+
 from tfx.proto import example_gen_pb2, transform_pb2, pusher_pb2
 from tfx.types import Channel, standard_artifacts
 from tfx.orchestration import pipeline, data_types
@@ -30,14 +31,22 @@ from tfx.dsl.experimental import latest_artifacts_resolver
 from tfx.dsl.experimental import latest_blessed_model_resolver
 from tfx.v1.extensions.google_cloud_big_query import BigQueryExampleGen
 from tfx.v1.extensions.google_cloud_ai_platform import Trainer as VertexTrainer 
+from tfx.v1.extensions.google_cloud_ai_platform import (
+    ENABLE_VERTEX_KEY,
+    VERTEX_REGION_KEY,
+    VERTEX_CONTAINER_IMAGE_URI_KEY,
+    VERTEX_CONTAINER_IMAGE_URI_KEY,
+    SERVING_ARGS_KEY
+)
 from tfx.v1.components import (
     StatisticsGen,
     ExampleValidator,
     Transform,
     Trainer,
     Evaluator,
-    Pusher,
+    Pusher
 )
+from tfx.extensions.google_cloud_ai_platform.pusher.component import Pusher as VertexPusher
 
 SCRIPT_DIR = os.path.dirname(
     os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__)))
@@ -241,23 +250,55 @@ def create_pipeline(
             base_directory=exported_model_location
         )
     )
-
-    # Push custom model to model registry.
-    pusher = Pusher(
+    
+     # Push custom model to model registry.
+    gcs_pusher = Pusher(
         model=trainer.outputs["model"],
         model_blessing=evaluator.outputs["blessing"],
         push_destination=push_destination,
-    ).with_id("ModelPusher")
-    
+    ).with_id("GcsModelPusher")
+
+    # Push to Vertex AI
+    vertex_serving_spec = {
+        'project_id': config.PROJECT,
+        'endpoint_name': config.MODEL_DISPLAY_NAME,
+        # Remaining argument is passed to aiplatform.Model.deploy()
+        # See https://cloud.google.com/vertex-ai/docs/predictions/deploy-model-api#deploy_the_model
+        # for the detail.
+        #
+        # Machine type is the compute resource to serve prediction requests.
+        # See https://cloud.google.com/vertex-ai/docs/predictions/configure-compute#machine-types
+        # for available machine types and acccerators.
+        'machine_type': 'n1-standard-4'
+    }
+
     # Upload custom trained model to Vertex AI.
+
+    # This implementation gives you no control over the name of the model, which complicates
+    # automatic steps downstream. It also immediately deploys to an AI Endpoint.
+    #
+    # vertex_pusher = VertexPusher(
+    #     model=trainer.outputs["model"],
+    #     model_blessing=evaluator.outputs["blessing"],
+    #     custom_config={
+    #           ENABLE_VERTEX_KEY: True,
+    #           VERTEX_REGION_KEY: config.REGION,
+    #           VERTEX_CONTAINER_IMAGE_URI_KEY: config.SERVING_IMAGE_URI,
+    #           SERVING_ARGS_KEY: vertex_serving_spec,
+    #       }
+    # ).with_id("VertexModelPusher")
+    
     labels = {
-        "dataset_name": config.DATASET_DISPLAY_NAME,
-        "pipeline_name": config.PIPELINE_NAME,
-        "pipeline_root": pipeline_root
+        "dataset_name": config.DATASET_DISPLAY_NAME[:62],
+        "pipeline_name": config.PIPELINE_NAME[:62],
+        "pipeline_root": pipeline_root[:62]
     }
     labels = json.dumps(labels)
     explanation_config = json.dumps(features.generate_explanation_config())
     
+    print(f"Labels for model: {labels}")
+
+    # Custom implementation.
     vertex_model_uploader = custom_components.vertex_model_uploader(
         project=config.PROJECT,
         region=config.REGION,
@@ -265,8 +306,8 @@ def create_pipeline(
         pushed_model_location=exported_model_location,
         serving_image_uri=config.SERVING_IMAGE_URI,
         model_blessing=evaluator.outputs["blessing"],
-        explanation_config=explanation_config,
-        labels=labels
+        explanation_config=explanation_config #,
+        #labels=labels # currently labels have values too long or too many keys or something else invalid
     ).with_id("VertexUploader")
 
     pipeline_components = [
@@ -281,13 +322,13 @@ def create_pipeline(
         trainer,
         baseline_model_resolver,
         evaluator,
-        pusher,
+        gcs_pusher,
     ]
     
     if int(config.UPLOAD_MODEL):
         pipeline_components.append(vertex_model_uploader)
         # Add dependency from pusher to aip_model_uploader.
-        vertex_model_uploader.add_upstream_node(pusher)
+        vertex_model_uploader.add_upstream_node(gcs_pusher)
 
     logging.info(
         f"Pipeline components: {[component.id for component in pipeline_components]}"
