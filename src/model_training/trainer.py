@@ -34,17 +34,23 @@ def train(
     logging.info(f"Loading tft output from {tft_output_dir}")
     tft_output = tft.TFTransformOutput(tft_output_dir)
     transformed_feature_spec = tft_output.transformed_feature_spec()
-
+    
+    batch_size = int(hyperparams["batch_size"])
+    epochs = int(hyperparams["num_epochs"])
+    N = 230910 + 402 # from 1st notebook
+    
+    steps_per_epoch = N // batch_size
+    
     train_dataset = data.get_dataset(
         train_data_dir,
         transformed_feature_spec,
-        hyperparams["batch_size"],
+        batch_size,
     )
 
     eval_dataset = data.get_dataset(
         eval_data_dir,
         transformed_feature_spec,
-        hyperparams["batch_size"],
+        batch_size,
     )
 
     optimizer = keras.optimizers.Adam(learning_rate=hyperparams["learning_rate"])
@@ -69,6 +75,7 @@ def train(
     classifier.fit(
         train_dataset,
         epochs=hyperparams["num_epochs"],
+        steps_per_epoch=steps_per_epoch,
         validation_data=eval_dataset,
         callbacks=[early_stopping, tensorboard_callback],
     )
@@ -88,7 +95,7 @@ def evaluate(model, data_dir, raw_schema_location, tft_output_dir, hyperparams):
     eval_dataset = data.get_dataset(
         data_dir,
         transformed_feature_spec,
-        hyperparams["batch_size"],
+        int(hyperparams["batch_size"]),
     )
 
     evaluation_metrics = model.evaluate(eval_dataset)

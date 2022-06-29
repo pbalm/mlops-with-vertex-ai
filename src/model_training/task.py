@@ -133,7 +133,7 @@ def main():
     # Log metrics in Vertex Experiments.
     logging.info(f'Logging metrics to Vertex Experiments...')
     if args.experiment_name:
-        vertex_ai.log_metrics({"val_loss": val_loss, "val_accuracy": val_accuracy})
+        vertex_ai.log_metrics({"val_loss": float(val_loss), "val_accuracy": float(val_accuracy)})
 
     try:
         exporter.export_serving_model(
