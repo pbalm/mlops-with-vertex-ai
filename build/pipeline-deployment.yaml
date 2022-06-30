@@ -70,13 +70,19 @@ steps:
   waitFor: ['Unit Test Datasource Utils', 'Unit Test Model']
   timeout: 1800s
 
+# cp build/Dockerfile.vertex Dockerfile
+- name: 'ubuntu'
+  args: ['cp', 'build/Dockerfile.vertex', 'Dockerfile']
+  dir: 'mlops-with-vertex-ai'
+  id: 'Copy Dockerfile'
+  waitFor: ['Clone Repository']
 
 # Build the image that encapsulates the pipeline.
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', '$_TFX_IMAGE_URI', '.']
   dir: 'mlops-with-vertex-ai'
   id: 'Build TFX Image'
-  waitFor: ['Local Test E2E Pipeline']
+  waitFor: ['Local Test E2E Pipeline', 'Copy Dockerfile']
   
   
 # Compile the pipeline.
