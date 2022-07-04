@@ -17,7 +17,7 @@ import logging
 import tensorflow as tf
 import tensorflow_transform as tft
 from tensorflow import keras
-
+import keras.backend as K
 
 from src.model_training import data, model
 
@@ -29,6 +29,7 @@ def train(
     hyperparams,
     log_dir,
     base_model_dir=None,
+    run=None
 ):
 
     logging.info(f"Loading tft output from {tft_output_dir}")
@@ -37,25 +38,33 @@ def train(
     
     batch_size = int(hyperparams["batch_size"])
     epochs = int(hyperparams["num_epochs"])
-    N = 230910 + 402 # from 1st notebook
-    
-    steps_per_epoch = N // batch_size
+    steps_per_epoch = int(hyperparams["steps_per_epoch"])
     
     train_dataset = data.get_dataset(
         train_data_dir,
         transformed_feature_spec,
         batch_size,
+        epochs
     )
 
     eval_dataset = data.get_dataset(
         eval_data_dir,
         transformed_feature_spec,
         batch_size,
+        epochs
     )
 
     optimizer = keras.optimizers.Adam(learning_rate=hyperparams["learning_rate"])
     loss = keras.losses.BinaryCrossentropy(from_logits=True)
-    metrics = [keras.metrics.BinaryAccuracy(name="accuracy")]
+    #loss = f1_weighted_loss
+    
+    acc_name = f'accuracy_{run}' if run else 'accuracy'
+    auc_name = f'auc_{run}' if run else 'auc'
+    metrics = [keras.metrics.BinaryAccuracy(name=acc_name), keras.metrics.AUC(curve='PR', name=auc_name)]
+    if run:
+        # we need one just called "accuracy" as well, to have one metric to optimize across runs for HP tuning
+        metrics.append(keras.metrics.BinaryAccuracy(name='accuracy'))
+   
 
     early_stopping = tf.keras.callbacks.EarlyStopping(
         monitor="val_loss", patience=5, restore_best_weights=True
@@ -71,13 +80,14 @@ def train(
 
     classifier.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
-    logging.info("Model training started...")
+    logging.info(f"Model training started... steps per epoch = {steps_per_epoch}")
     classifier.fit(
         train_dataset,
         epochs=hyperparams["num_epochs"],
         steps_per_epoch=steps_per_epoch,
         validation_data=eval_dataset,
-        callbacks=[early_stopping, tensorboard_callback],
+        #callbacks=[early_stopping, tensorboard_callback],
+        callbacks=[tensorboard_callback],
     )
     logging.info("Model training completed.")
 
@@ -96,9 +106,68 @@ def evaluate(model, data_dir, raw_schema_location, tft_output_dir, hyperparams):
         data_dir,
         transformed_feature_spec,
         int(hyperparams["batch_size"]),
+        1
     )
 
     evaluation_metrics = model.evaluate(eval_dataset)
     logging.info("Model evaluation completed.")
 
     return evaluation_metrics
+
+
+def f1(y_true, y_pred):
+    y_pred = K.round(y_pred)
+    tp = K.sum(K.cast(y_true*y_pred, 'float'), axis=0)
+    tn = K.sum(K.cast((1-y_true)*(1-y_pred), 'float'), axis=0)
+    fp = K.sum(K.cast((1-y_true)*y_pred, 'float'), axis=0)
+    fn = K.sum(K.cast(y_true*(1-y_pred), 'float'), axis=0)
+
+    p = tp / (tp + fp + K.epsilon())
+    r = tp / (tp + fn + K.epsilon())
+
+    f1 = 2*p*r / (p+r+K.epsilon())
+    f1 = tf.where(tf.is_nan(f1), tf.zeros_like(f1), f1)
+    return K.mean(f1)
+
+
+def f1_loss(y_true, y_pred):
+    
+    tp = K.sum(K.cast(y_true*y_pred, 'float'), axis=0)
+    tn = K.sum(K.cast((1-y_true)*(1-y_pred), 'float'), axis=0)
+    fp = K.sum(K.cast((1-y_true)*y_pred, 'float'), axis=0)
+    fn = K.sum(K.cast(y_true*(1-y_pred), 'float'), axis=0)
+
+    p = tp / (tp + fp + K.epsilon())
+    r = tp / (tp + fn + K.epsilon())
+
+    f1 = 2*p*r / (p+r+K.epsilon())
+    f1 = tf.where(tf.math.is_nan(f1), tf.zeros_like(f1), f1)
+    return 1 - K.mean(f1)
+
+
+def f1_weighted_loss(true, pred): #shapes (batch, 4)
+
+    #for metrics include these two lines, for loss, don't include them
+    #these are meant to round 'pred' to exactly zeros and ones
+    #predLabels = K.argmax(pred, axis=-1)
+    #pred = K.one_hot(predLabels, 4) 
+
+
+    ground_positives = K.sum(true, axis=0) + K.epsilon()       # = TP + FN
+    pred_positives = K.sum(pred, axis=0) + K.epsilon()         # = TP + FP
+    true_positives = K.sum(true * pred, axis=0) + K.epsilon()  # = TP
+        #all with shape (4,)
+    
+    precision = true_positives / pred_positives 
+    recall = true_positives / ground_positives
+        #both = 1 if ground_positives == 0 or pred_positives == 0
+        #shape (4,)
+
+    f1 = 2 * (precision * recall) / (precision + recall + K.epsilon())
+        #still with shape (4,)
+
+    weighted_f1 = f1 * ground_positives / K.sum(ground_positives) 
+    weighted_f1 = K.sum(weighted_f1)
+
+    
+    return 1 - weighted_f1 #for metrics, return only 'weighted_f1'

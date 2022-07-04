@@ -66,6 +66,7 @@ def create_pipeline(
     pipeline_root: str,
     num_epochs: data_types.RuntimeParameter,
     batch_size: data_types.RuntimeParameter,
+    steps_per_epoch: data_types.RuntimeParameter,
     learning_rate: data_types.RuntimeParameter,
     hidden_units: data_types.RuntimeParameter,
     metadata_connection_config: metadata_store_pb2.ConnectionConfig = None,
@@ -75,15 +76,17 @@ def create_pipeline(
     hyperparams_gen = custom_components.hyperparameters_gen(
         num_epochs=num_epochs,
         batch_size=batch_size,
+        steps_per_epoch=steps_per_epoch,
         learning_rate=learning_rate,
-        hidden_units=hidden_units,
+        hidden_units=hidden_units
     ).with_id("HyperparamsGen")
 
     # Get train source query.
+    logging.info(f'Using dataset {config.VERTEX_DATASET_NAME}')
     train_sql_query = datasource_utils.get_training_source_query(
         config.PROJECT,
         config.REGION,
-        config.DATASET_DISPLAY_NAME,
+        config.VERTEX_DATASET_NAME,
         ml_use="UNASSIGNED",
         limit=int(config.TRAIN_LIMIT),
     )
@@ -111,7 +114,7 @@ def create_pipeline(
     test_sql_query = datasource_utils.get_training_source_query(
         config.PROJECT,
         config.REGION,
-        config.DATASET_DISPLAY_NAME,
+        config.VERTEX_DATASET_NAME,
         ml_use="TEST",
         limit=int(config.TEST_LIMIT),
     )
@@ -289,7 +292,7 @@ def create_pipeline(
     # ).with_id("VertexModelPusher")
     
     labels = {
-        "dataset_name": config.DATASET_DISPLAY_NAME[:62],
+        "dataset_name": config.VERTEX_DATASET_NAME[:62],
         "pipeline_name": config.PIPELINE_NAME[:62],
         "pipeline_root": pipeline_root[:62]
     }

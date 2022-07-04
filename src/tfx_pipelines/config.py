@@ -26,9 +26,9 @@ MODEL_REGISTRY_URI = os.getenv(
     os.path.join(GCS_LOCATION, "model_registry"),
 )
 
-DATASET_DISPLAY_NAME = os.getenv("DATASET_DISPLAY_NAME", "chicago-taxi-tips")
+VERTEX_DATASET_NAME = os.getenv("VERTEX_DATASET_NAME", "creditcards")
 MODEL_DISPLAY_NAME = os.getenv(
-    "MODEL_DISPLAY_NAME", f"{DATASET_DISPLAY_NAME}-classifier"
+    "MODEL_DISPLAY_NAME", f"{VERTEX_DATASET_NAME}-classifier"
 )
 PIPELINE_NAME = os.getenv("PIPELINE_NAME", f"{MODEL_DISPLAY_NAME}-train-pipeline")
 
@@ -45,14 +45,12 @@ ACCURACY_THRESHOLD = os.getenv("ACCURACY_THRESHOLD", "0.8")
 USE_KFP_SA = os.getenv("USE_KFP_SA", "False")
 
 TFX_IMAGE_URI = os.getenv(
-    "TFX_IMAGE_URI", f"gcr.io/{PROJECT}/tfx-{DATASET_DISPLAY_NAME}:latest"
+    "TFX_IMAGE_URI", f"{REGION}-docker.pkg.dev/{PROJECT}/{VERTEX_DATASET_NAME}/vertex:latest"
 )
 
 BEAM_RUNNER = os.getenv("BEAM_RUNNER", "DirectRunner")
 SERVICE_ACCOUNT = os.getenv("SERVICE_ACCOUNT", "")
 SUBNETWORK = os.getenv("SUBNETWORK", "")
-#LABELS = os.getenv("LABELS", "")
-
 
 BEAM_DIRECT_PIPELINE_ARGS = [
     f"--project={PROJECT}",
@@ -67,9 +65,6 @@ BEAM_DATAFLOW_PIPELINE_ARGS = [
     f"--no_use_public_ips",
     f"--subnetwork={SUBNETWORK}"
 ]
-
-#for label in LABELS.split(','):
-#    BEAM_DATAFLOW_PIPELINE_ARGS.append(f"--label={label}")
 
 TRAINING_RUNNER = os.getenv("TRAINING_RUNNER", "local")
 VERTEX_TRAINING_ARGS = {

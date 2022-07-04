@@ -53,6 +53,7 @@ PREDICTION_RESULTS_PREFIX = "prediction.results-*"
 def hyperparameters_gen(
     num_epochs: Parameter[int],
     batch_size: Parameter[int],
+    steps_per_epoch: Parameter[int],
     learning_rate: Parameter[float],
     hidden_units: Parameter[str],
     hyperparameters: OutputArtifact[HyperParameters],
@@ -60,6 +61,7 @@ def hyperparameters_gen(
 
     hp_dict = dict()
     hp_dict["num_epochs"] = num_epochs
+    hp_dict["steps_per_epoch"] = steps_per_epoch
     hp_dict["batch_size"] = batch_size
     hp_dict["learning_rate"] = learning_rate
     hp_dict["hidden_units"] = [int(units) for units in hidden_units.split(",")]

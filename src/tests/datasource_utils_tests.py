@@ -31,36 +31,36 @@ LIMIT = 100
 TARGET_COLUMN = "Class"
 
 EXPECTED_TRAINING_COLUMNS = [
-'V1',
-'V2',
-'V3',
-'V4',
-'V5',
-'V6',
-'V7',
-'V8',
-'V9',
-'V10',
-'V11',
-'V12',
-'V13',
-'V14',
-'V15',
-'V16',
-'V17',
-'V18',
-'V19',
-'V20',
-'V21',
-'V22',
-'V23',
-'V24',
-'V25',
-'V26',
-'V27',
-'V28',
-'Amount',
-'Class'
+    'V1',
+    'V2',
+    'V3',
+    'V4',
+    'V5',
+    'V6',
+    'V7',
+    'V8',
+    'V9',
+    'V10',
+    'V11',
+    'V12',
+    'V13',
+    'V14',
+    'V15',
+    'V16',
+    'V17',
+    'V18',
+    'V19',
+    'V20',
+    'V21',
+    'V22',
+    'V23',
+    'V24',
+    'V25',
+    'V26',
+    'V27',
+    'V28',
+    'Amount',
+    'Class'
 ]
 
 
@@ -69,12 +69,12 @@ def test_training_query():
     project = os.getenv("PROJECT")
     location = os.getenv("BQ_LOCATION")
     bq_dataset_name = os.getenv("BQ_DATASET_NAME")
-    bq_table_name = os.getenv("BQ_TABLE_NAME")
+    bq_table_name = os.getenv("ML_TABLE")
 
     assert project, "Environment variable PROJECT is None!"
     assert location, "Environment variable BQ_LOCATION is None!"
     assert bq_dataset_name, "Environment variable BQ_DATASET_NAME is None!"
-    assert bq_table_name, "Environment variable BQ_TABLE_NAME is None!"
+    assert bq_table_name, "Environment variable ML_TABLE is None!"
 
     logging.info(f"BigQuery Source: {project}.{bq_dataset_name}.{bq_table_name}")
 
@@ -97,12 +97,12 @@ def test_serving_query():
     project = os.getenv("PROJECT")
     location = os.getenv("BQ_LOCATION")
     bq_dataset_name = os.getenv("BQ_DATASET_NAME")
-    bq_table_name = os.getenv("BQ_TABLE_NAME")
+    bq_table_name = os.getenv("ML_TABLE")
 
     assert project, "Environment variable PROJECT is None!"
     assert location, "Environment variable BQ_LOCATION is None!"
     assert bq_dataset_name, "Environment variable BQ_DATASET_NAME is None!"
-    assert bq_table_name, "Environment variable BQ_TABLE_NAME is None!"
+    assert bq_table_name, "Environment variable ML_TABLE is None!"
 
     logging.info(f"BigQuery Source: {project}.{bq_dataset_name}.{bq_table_name}")
 

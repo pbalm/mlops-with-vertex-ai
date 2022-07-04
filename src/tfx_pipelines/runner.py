@@ -42,6 +42,11 @@ def compile_training_pipeline(pipeline_definition_file):
             default=defaults.BATCH_SIZE,
             ptype=int,
         ),
+        steps_per_epoch=data_types.RuntimeParameter(
+            name="steps_per_epoch",
+            default=int(config.TRAIN_LIMIT) // defaults.BATCH_SIZE,
+            ptype=int,
+        ),
         learning_rate=data_types.RuntimeParameter(
             name="learning_rate",
             default=defaults.LEARNING_RATE,

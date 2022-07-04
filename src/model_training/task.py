@@ -65,9 +65,12 @@ def get_args():
     )
 
     parser.add_argument("--learning-rate", default=0.001, type=float)
-    parser.add_argument("--batch-size", default=512, type=float)
-    parser.add_argument("--hidden-units", default="64,32", type=str)
+    parser.add_argument("--batch-size", default=512, type=int)
+    parser.add_argument("--steps_per_epoch", default=80, type=int)
     parser.add_argument("--num-epochs", default=10, type=int)
+
+    parser.add_argument("--hidden-units", default="64,32", type=str)
+    parser.add_argument("--dropout", default=0.1, type=float)
 
     parser.add_argument("--project", type=str)
     parser.add_argument("--region", type=str)
@@ -110,9 +113,10 @@ def main():
         tft_output_dir=args.tft_output_dir,
         hyperparams=hyperparams,
         log_dir=args.log_dir,
+        run=run_id
     )
 
-    val_loss, val_accuracy = trainer.evaluate(
+    val_loss, val_accuracy, val_auc, _ = trainer.evaluate(
         model=classifier,
         data_dir=args.eval_data_dir,
         raw_schema_location=RAW_SCHEMA_LOCATION,
@@ -133,7 +137,7 @@ def main():
     # Log metrics in Vertex Experiments.
     logging.info(f'Logging metrics to Vertex Experiments...')
     if args.experiment_name:
-        vertex_ai.log_metrics({"val_loss": float(val_loss), "val_accuracy": float(val_accuracy)})
+        vertex_ai.log_metrics({"val_loss": float(val_loss), "val_accuracy": float(val_accuracy), 'AUC': float(val_auc)})
 
     try:
         exporter.export_serving_model(

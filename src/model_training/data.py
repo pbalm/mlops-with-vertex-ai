@@ -23,7 +23,7 @@ def _gzip_reader_fn(filenames):
     return tf.data.TFRecordDataset(filenames, compression_type="GZIP")
 
 
-def get_dataset(file_pattern, feature_spec, batch_size=200):
+def get_dataset(file_pattern, feature_spec, batch_size, epochs):
     """Generates features and label for tuning/training.
     Args:
       file_pattern: input tfrecord file pattern.
@@ -41,8 +41,9 @@ def get_dataset(file_pattern, feature_spec, batch_size=200):
         features=feature_spec,
         label_key=features.TARGET_FEATURE_NAME,
         reader=_gzip_reader_fn,
-        num_epochs=1,
+        num_epochs=2*epochs,
         drop_final_batch=True,
     )
+    
 
     return dataset

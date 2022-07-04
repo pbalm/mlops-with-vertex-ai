@@ -1,0 +1,23 @@
+personal:
+    project: 'pbalm-cxb-aa'
+    region: 'europe-west4' 
+    service_account: '188940921537-compute@developer.gserviceaccount.com'
+    vertex_dataset_name: 'creditcards'
+    raw_schema_dir: 'src/raw_schema'
+    bucket: 'pbalm-cxb-aa-eu'
+    limit: 5000
+    version: 'v03'
+   
+    bq:
+       dataset: 'vertex_eu'
+       location: 'EU'
+       source_table: 'creditcards'
+       ml_table: 'creditcards_ml'
+    
+    dataflow:
+        subnet: 'default'
+        service_account: '188940921537-compute@developer.gserviceaccount.com'
+        
+
+caixa:
+    project: 

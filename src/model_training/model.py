@@ -96,14 +96,17 @@ def create_model(feature_keys, hyperparams) -> keras.Model:
     for units in hyperparams['hidden_units']:
         d = layers.Dense(units, activation=activations.relu)(d)
         
+    if 'dropout' in hyperparams:
+        d = tf.keras.layers.Dropout(hyperparams['dropout'])(d)
+        
     outputs = layers.Dense(1, activation=activations.sigmoid)(d)
     
     model = keras.Model(inputs=inputs, outputs=outputs)
 
-    model.compile(
-        optimizer=optimizers.RMSprop(),
-        loss=losses.binary_crossentropy,
-        metrics=[metrics.binary_accuracy])
+    #model.compile(
+    #    optimizer=optimizers.RMSprop(),
+    #    loss=losses.binary_crossentropy,
+    #    metrics=[metrics.binary_accuracy, metrics.AUC(curve='PR')])
 
     model.summary(print_fn=logging.info)
 

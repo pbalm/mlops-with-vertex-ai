@@ -41,14 +41,14 @@ def test_e2e_pipeline():
     project = os.getenv("PROJECT")
     region = os.getenv("REGION")
     model_display_name = os.getenv("MODEL_DISPLAY_NAME")
-    dataset_display_name = os.getenv("DATASET_DISPLAY_NAME")
+    dataset_display_name = os.getenv("VERTEX_DATASET_NAME")
     gcs_location = os.getenv("GCS_LOCATION")
     model_registry = os.getenv("MODEL_REGISTRY_URI")
     upload_model = os.getenv("UPLOAD_MODEL")
 
     assert project, "Environment variable PROJECT is None!"
     assert region, "Environment variable REGION is None!"
-    assert dataset_display_name, "Environment variable DATASET_DISPLAY_NAME is None!"
+    assert dataset_display_name, "Environment variable VERTEX_DATASET_NAME is None!"
     assert model_display_name, "Environment variable MODEL_DISPLAY_NAME is None!"
     assert gcs_location, "Environment variable GCS_LOCATION is None!"
     assert model_registry, "Environment variable MODEL_REGISTRY_URI is None!"
@@ -77,6 +77,7 @@ def test_e2e_pipeline():
         pipeline_root=pipeline_root,
         num_epochs=NUM_EPOCHS,
         batch_size=BATCH_SIZE,
+        steps_per_epoch=100,
         learning_rate=LEARNING_RATE,
         hidden_units=HIDDEN_UNITS,
         metadata_connection_config=metadata_connection_config,
