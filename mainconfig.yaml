@@ -7,6 +7,7 @@ personal:
     bucket: 'pbalm-cxb-aa-eu'
     limit: 5000
     version: 'v03'
+    cloudfunction_region: 'europe-west1'
    
     bq:
        dataset: 'vertex_eu'
@@ -18,6 +19,7 @@ personal:
         subnet: 'default'
         service_account: '188940921537-compute@developer.gserviceaccount.com'
         
+    featurestore_id: 'creditcards'
 
 caixa:
     project: 

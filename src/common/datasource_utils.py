@@ -57,5 +57,4 @@ def get_training_source_query(
 
 
 def get_serving_source_query(bq_dataset_name, bq_table_name, limit=None):
-
     return _get_source_query(bq_dataset_name, bq_table_name, ml_use=None, limit=limit)
