@@ -19,6 +19,8 @@ from tensorflow.keras import layers, activations, metrics, losses, optimizers
 
 import logging
 
+from src.common import features
+
 
 def create_model(feature_keys, hyperparams) -> keras.Model:
     
