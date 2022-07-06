@@ -24,7 +24,7 @@ personal:
 caixa-novpcsc:
     project: 'cxb1-prj-test-no-vpcsc'
     region: 'europe-west4' 
-    service_account: 'cxb1-prj-test-no-vpcsc@appspot.gserviceaccount.com'
+    service_account: 'sa-mlops@cxb1-prj-test-no-vpcsc.iam.gserviceaccount.com'
     vertex_dataset_name: 'creditcards'
     raw_schema_dir: 'src/raw_schema'
     bucket: 'cxb1-prjtest-novpcsc-eu'
@@ -39,5 +39,5 @@ caixa-novpcsc:
     
     dataflow:
         subnet: 'default'
-        service_account: 'cxb1-prj-test-no-vpcsc@appspot.gserviceaccount.com'
+        service_account: 'sa-mlops@cxb1-prj-test-no-vpcsc.iam.gserviceaccount.com'
         
