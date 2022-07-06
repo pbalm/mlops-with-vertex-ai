@@ -1,6 +1,6 @@
 personal:
     project: 'pbalm-cxb-aa'
-    region: 'europe-west4' 
+    region: 'europe-west1' # europe-west4 has Cloud NAT, europe-west1 does not
     service_account: '188940921537-compute@developer.gserviceaccount.com'
     vertex_dataset_name: 'creditcards'
     raw_schema_dir: 'src/raw_schema'
@@ -41,3 +41,4 @@ caixa-novpcsc:
         subnet: 'default'
         service_account: 'sa-mlops@cxb1-prj-test-no-vpcsc.iam.gserviceaccount.com'
         
+    featurestore_id: 'creditcards'

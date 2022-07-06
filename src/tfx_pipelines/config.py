@@ -63,7 +63,8 @@ BEAM_DATAFLOW_PIPELINE_ARGS = [
     f"--runner={BEAM_RUNNER}",
     f"--service_account_email={SERVICE_ACCOUNT}",
     f"--no_use_public_ips",
-    f"--subnetwork={SUBNETWORK}"
+    f"--subnetwork={SUBNETWORK}",
+    f"--sdk_container_image={REGION}-docker.pkg.dev/{PROJECT}/{VERTEX_DATASET_NAME}/dataflow:latest'
 ]
 
 TRAINING_RUNNER = os.getenv("TRAINING_RUNNER", "local")
