@@ -20,6 +20,10 @@ personal:
         service_account: '188940921537-compute@developer.gserviceaccount.com'
         
     featurestore_id: 'creditcards'
+    
+    git:
+        repo_url: "https://github.com/pbalm/mlops-with-vertex-ai.git"
+        branch: "main"     
 
 caixa-novpcsc:
     project: 'cxb1-prj-test-no-vpcsc'
@@ -42,3 +46,7 @@ caixa-novpcsc:
         service_account: 'sa-mlops@cxb1-prj-test-no-vpcsc.iam.gserviceaccount.com'
         
     featurestore_id: 'creditcards'
+
+    git:
+        repo_url: "https://github.com/pbalm/mlops-with-vertex-ai.git"
+        branch: "main"     
