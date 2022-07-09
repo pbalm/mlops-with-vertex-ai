@@ -13,4 +13,4 @@ tfx==1.8.0
 tensorflow-io==0.26.0
 apache-beam[gcp]==2.39.0
 numpy==1.21.6
-
+flask
